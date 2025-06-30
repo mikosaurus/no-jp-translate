@@ -56,3 +56,24 @@ def translate_text(text, source_language=None):
 result = translate_text("Hei, hvordan har du det?")
 print(f"Translation: {result['translated_text']}")
 print(f"Path: {result['translation_path']}"
+
+
+# Build and deployment commands for GitHub Container Registry:
+
+# 1. Build the image
+docker build -t translation-api .
+
+# 2. Login to GitHub Container Registry
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+# Alternative: docker login ghcr.io (will prompt for username/password)
+
+# 3. Tag for GitHub Container Registry
+docker tag translation-api ghcr.io/YOURUSERNAME/translation-api:latest
+docker tag translation-api ghcr.io/YOURUSERNAME/translation-api:v1.0.0
+
+# 4. Push to GitHub Container Registry  
+docker push ghcr.io/YOURUSERNAME/translation-api:latest
+docker push ghcr.io/YOURUSERNAME/translation-api:v1.0.0
+
+# 5. Test locally first
+docker run -p 8000:8000 ghcr.io/YOURUSERNAME/translation-api:latest
